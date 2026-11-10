@@ -31,7 +31,9 @@ function App() {
   return (
     <div>
       <h1>Quiz</h1>
-      <CartaoPergunta texto={perguntas[1].texto} />
+      <CartaoPergunta texto={perguntas[1].texto} 
+      alternativas={perguntas[1].alternativas}
+      />
     </div>
   );
 }
