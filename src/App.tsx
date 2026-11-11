@@ -1,5 +1,6 @@
 import './App.css'
 import CartaoPergunta from './CartaoPergunta'
+import { useState } from 'react'
 
 type Pergunta = {
   texto: string;
@@ -28,12 +29,18 @@ const perguntas: Pergunta[] = [
 ];
 
 function App() {
+  const [perguntaAtual, setPerguntaAtual] = useState<number>(0);
+  const [pontuacao, setPontuacao] = useState<number>(0);
+  const [alternativaEscolhida, setAlternativaEscolhida] = useState<number | null>(null);
   return (
     <div>
       <h1>Quiz</h1>
-      <CartaoPergunta texto={perguntas[1].texto} 
-      alternativas={perguntas[1].alternativas}
+      <CartaoPergunta 
+      texto={perguntas[perguntaAtual].texto} 
+      alternativas={perguntas[perguntaAtual].alternativas}
       />
+      <p>Pontuação: {pontuacao}</p>
+      <p>{alternativaEscolhida === null ? "Escolha uma alternativa" : "Você já escolheu"}</p>
     </div>
   );
 }
