@@ -8,6 +8,8 @@ type Pergunta = {
   correta: number;
 };
 
+type Tela = "inicio" | "jogando" | "resultado";
+
 const perguntas: Pergunta[] = [
   {
     texto: "O que o map faz?",
@@ -32,15 +34,77 @@ function App() {
   const [perguntaAtual, setPerguntaAtual] = useState<number>(0);
   const [pontuacao, setPontuacao] = useState<number>(0);
   const [alternativaEscolhida, setAlternativaEscolhida] = useState<number | null>(null);
+
+  const [tela, setTela] = useState<Tela>("inicio");
+
+  function acertou(posicao: number): boolean {
+    return posicao === perguntas[perguntaAtual].correta;
+  }
+
+  function escolherAlternativa(posicao: number) {
+    if (alternativaEscolhida !== null) {
+      return;
+    }
+    setAlternativaEscolhida(posicao);
+    if (acertou(posicao)) {
+      setPontuacao(pontuacao + 1);
+    }
+  }
+
+  function proximaPergunta() {
+    if (perguntaAtual === perguntas.length - 1) {
+      setTela("resultado");
+      return;
+    }
+    setPerguntaAtual(perguntaAtual + 1);
+    setAlternativaEscolhida(null);
+  }
+
+  function jogarDeNovo() {
+    setPerguntaAtual(0);
+    setPontuacao(0);
+    setAlternativaEscolhida(null);
+    setTela("inicio");
+  }
+
+
+  if (tela === "inicio") {
+    return (
+      <div>
+        <h1>Quiz</h1>
+        <p>Teste seus conhecimentos de JavaScript e React</p>
+        <button onClick={() => setTela("jogando")}>Começar</button>
+      </div>
+    );
+  }
+
+  if (tela === "resultado") {
+    return (
+      <div>
+        <h1>Resultado</h1>
+        <p>Você fez {pontuacao} pontos de {perguntas.length}</p>
+        <button onClick={jogarDeNovo}>Jogar de novo</button>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h1>Quiz</h1>
       <CartaoPergunta 
       texto={perguntas[perguntaAtual].texto} 
       alternativas={perguntas[perguntaAtual].alternativas}
+      aoEscolher={escolherAlternativa}
       />
+      
       <p>Pontuação: {pontuacao}</p>
-      <p>{alternativaEscolhida === null ? "Escolha uma alternativa" : "Você já escolheu"}</p>
+
+      {alternativaEscolhida === null ? (
+        <p>Escolha uma alternativa</p>
+      ) : (
+        <button onClick={proximaPergunta}>Próxima</button>
+      )}
+
     </div>
   );
 }
